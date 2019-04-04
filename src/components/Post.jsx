@@ -1,8 +1,12 @@
 import React from 'react';
-
+import { getRef } from '../api'
 import moment from 'moment';
 
-const Post = ({ title, content, user, createdAt, stars, comments }) => {
+const Post = ({ id, title, content, user, createdAt, stars, comments }) => {
+  const postRef = getRef(`posts/${id}`)
+  const starPost = () => postRef.update({ stars: stars + 1 })
+  const deletePost = () => postRef.delete()
+
   return (
     <article className="Post">
       <div className="Post--content">
@@ -24,11 +28,11 @@ const Post = ({ title, content, user, createdAt, stars, comments }) => {
             {comments}
           </p>
           <p>Posted by {user.displayName}</p>
-          <p>{moment(createdAt).calendar()}</p>
+          <p>{moment(createdAt.toDate()).calendar()}</p>
         </div>
         <div>
-          <button className="star">Star</button>
-          <button className="delete">Delete</button>
+          <button onClick={starPost} className="star">Star</button>
+          <button onClick={deletePost} className="delete">Delete</button>
         </div>
       </div>
     </article>
@@ -40,7 +44,6 @@ Post.defaultProps = {
   content:
     'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ducimus est aut dolorem, dolor voluptatem assumenda possimus officia blanditiis iusto porro eaque non ab autem nihil! Alias repudiandae itaque quo provident.',
   user: {
-    id: '123',
     displayName: 'Bill Murray',
     email: 'billmurray@mailinator.com',
     photoURL: 'https://www.fillmurray.com/300/300',
