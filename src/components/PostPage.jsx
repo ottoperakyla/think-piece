@@ -58,7 +58,7 @@ class PostPage extends Component {
         { post && (
           <>
             <Post {...post} />
-            <Comments comments={comments} postId={post.id} onCreate={this.createComment} />
+            <Comments comments={comments} onCreate={this.createComment} />
           </>
         )}
       </div>
