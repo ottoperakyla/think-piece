@@ -1,16 +1,24 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { getRef } from '../api'
 import moment from 'moment';
+import { UserContext } from '../providers/UserProvider';
+import { Link } from 'react-router-dom'
 
 const Post = ({ id, title, content, user, createdAt, stars, comments }) => {
+  const currentUser = useContext(UserContext)
   const postRef = getRef(`posts/${id}`)
   const starPost = () => postRef.update({ stars: stars + 1 })
   const deletePost = () => postRef.delete()
 
+  const belongsToCurrentUser = postAuthor => {
+    if (!currentUser) return false
+    return currentUser.uid === postAuthor.uid
+  }  
+
   return (
     <article className="Post">
       <div className="Post--content">
-        <h3>{title}</h3>
+        <Link to={`posts/${id}`}><h3>{title}</h3></Link>
         <div>{content}</div>
       </div>
       <div className="Post--meta">
@@ -32,7 +40,7 @@ const Post = ({ id, title, content, user, createdAt, stars, comments }) => {
         </div>
         <div>
           <button onClick={starPost} className="star">Star</button>
-          <button onClick={deletePost} className="delete">Delete</button>
+          {belongsToCurrentUser(user) && <button onClick={deletePost} className="delete">Delete</button>}
         </div>
       </div>
     </article>
